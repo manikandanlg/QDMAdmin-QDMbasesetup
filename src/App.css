@@ -1,0 +1,33 @@
+.App {
+  text-align: center;
+}
+
+#vertical-tab-one
+{
+  width: 85%;
+}
+
+#addMenu
+{
+  display: inline-flex;
+  padding-left: 55em;
+}
+.MuiTable-root
+{
+  width: auto !important;
+}
+
+.MuiGrid-grid-xs-6
+{
+  max-width: 100% !important;
+  flex-basis: 100% !important;
+}
+
+.slide-pane__overlay.ReactModal__Overlay--after-open
+{
+  z-index: 99999;
+}
+.MuiTableHead-root
+{
+  white-space: nowrap;
+}
