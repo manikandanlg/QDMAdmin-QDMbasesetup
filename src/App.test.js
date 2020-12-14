@@ -1,8 +1,17 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
+/**
+ * @author Kameshwaran Murugan
+ * @email kamesh@qdmplatforms.com
+ * @create date 2020-11-27
+ * @modify date 2020-12-01
+ * @desc Test Case
+ */
 
-test('renders learn react link', () => {
+
+import React from "react";
+import { render } from "@testing-library/react";
+import App from "./App";
+
+test("renders learn react link", () => {
   const { getByText } = render(<App />);
   const linkElement = getByText(/learn react/i);
   expect(linkElement).toBeInTheDocument();
