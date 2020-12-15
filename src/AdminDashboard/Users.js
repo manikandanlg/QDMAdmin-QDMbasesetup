@@ -21,8 +21,6 @@ import axios from 'axios'
 import Alert from '@material-ui/lab/Alert';
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import { Container, Col, Form, FormGroup, Input } from 'reactstrap';
-import TextField from '@material-ui/core/TextField';
 import Tabs from "../components/Tabs";
 
 
@@ -147,24 +145,24 @@ function Users() {
   endDate:''
 });
 
-const addUsers = () => {
-  axios.post('http://localhost:5000/api/Create/', {
-      "ProjectName": state.ProjectName, "ProjectDomain": state.ProjectDomain,
-      "Client": state.Client, "StartDate":state.StartDate,
-      "EndDate": state.EndDate
-  })
-      .then(json => {
-          if (json.data !== undefined) {
-              console.log(json.data.Status);
-              alert("Data Save Successfully");
-              //this.props.history.push('/Client')                    
-          }
-          else {
-              alert('Data not Saved');
-              //this.props.history.push('/Client')
-          }
-      })
-}
+//const addUsers = () => {
+  //axios.post('http://localhost:5000/api/Create/', {
+    //  "ProjectName": state.ProjectName, "ProjectDomain": state.ProjectDomain,
+      //"Client": state.Client, "StartDate":state.StartDate,
+      //"EndDate": state.EndDate
+  //})
+    //  .then(json => {
+      //    if (json.data !== undefined) {
+        //      console.log(json.data.Status);
+          //    alert("Data Save Successfully");
+            //  //this.props.history.push('/Client')                    
+          //}
+          //else {
+            //  alert('Data not Saved');
+              ////this.props.history.push('/Client')
+          //}
+      //})
+//}
 //const handleChange = (e) => {
   //this.setState({ [e.target.name]: e.target.value });
 //}

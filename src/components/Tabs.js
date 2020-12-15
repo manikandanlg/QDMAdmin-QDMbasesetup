@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Tab from "./Tab";
-import "./Style.css";
+import "./style.css";
 
 class Tabs extends Component {
   static propTypes = {
