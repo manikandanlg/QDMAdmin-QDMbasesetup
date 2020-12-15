@@ -18,7 +18,7 @@ import {
   NotFound
 } from './../screens';
 
-import Verticaltab from '../AdminDashboard/Verticaltab';
+import VerticalTab from '../AdminDashboard/VerticalTab';
 
 
 const RouterApp = (props) => {
@@ -26,10 +26,10 @@ const RouterApp = (props) => {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={Verticaltab} />
+        <Route exact path="/" component={VerticalTab} />
 
         {/* Login path */}
-        <Route path={Routes.Verticaltab} component={Verticaltab} />
+        <Route path={Routes.VerticalTab} component={VerticalTab} />
 
         {/* For unknow/non-defined path */}
         <Route path="*" component={NotFound} />

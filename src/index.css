@@ -6,6 +6,10 @@
  * @desc All global CSS are defined here
  */
 
+html,body
+{
+  font-size: 12px !important;  
+}
 ::-webkit-scrollbar {
   width: 6px !important;
 } /* this targets the default scrollbar (compulsory) */

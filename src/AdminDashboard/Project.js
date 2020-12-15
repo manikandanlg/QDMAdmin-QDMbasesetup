@@ -22,6 +22,7 @@ import Alert from '@material-ui/lab/Alert';
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { Container, Col, Form, FormGroup, Input } from 'reactstrap';
+import TextField from '@material-ui/core/TextField';
 
 
 const tableIcons = {
@@ -59,10 +60,10 @@ function Project() {
   var columns = [
     {title: "id", field: "id", hidden: true},
     {title: "Project Name", field: "first_name"},
-    {title: "Domain", field: "Domain"},
-    {title: "Client Name", field: "Clientname"},
-    {title: "Duration", field: "country"},
-    {title: "Status", field: "Status"}
+    {title: "Domain", field: "projectDomain"},
+    {title: "Client Name", field: "clientname"},
+    {title: "Duration", field: "duration"},
+    {title: "Status", field: "status"}
   ]
   const [data, setData] = useState([]); //table data
 
@@ -138,14 +139,14 @@ function Project() {
  const [state, setState] = useState({
   isPaneOpen: false,
   isPaneOpenLeft: false,
-  ProjectName: '',
-  ProjectDomain: '',
-  Client: '',            
-  StartDate: '',
-  EndDate:''
+  projectName: '',
+  projectDomain: '',
+  client: '',            
+  startDate: '',
+  endDate:''
 });
 
-const AddClient = () => {
+const addProject = () => {
   axios.post('http://localhost:5000/api/Create/', {
       "ProjectName": state.ProjectName, "ProjectDomain": state.ProjectDomain,
       "Client": state.Client, "StartDate":state.StartDate,
@@ -169,10 +170,8 @@ const AddClient = () => {
 
 
   return (
-    <div className="App">
-      
-      <Grid container spacing={1}>
-         
+    <div className="App">      
+      <Grid container spacing={1}>         
           <Grid item xs={6}>
           <div>
             {iserror && 
@@ -187,7 +186,7 @@ const AddClient = () => {
            Add Project<AddBox onClick={() => setState({ isPaneOpen: true })}></AddBox>
           </div>
             <MaterialTable
-              title="Project Data"
+              title="Project Details"
               columns={columns}
               data={data}
               icons={tableIcons}
@@ -196,8 +195,7 @@ const AddClient = () => {
                   new Promise((resolve) => {
                       handleRowUpdate(newData, oldData, resolve);
                       
-                  }),
-               
+                  }),               
                 onRowDelete: (oldData) =>
                   new Promise((resolve) => {
                     handleRowDelete(oldData, resolve)
@@ -212,20 +210,19 @@ const AddClient = () => {
         <SlidingPane id="side-drawer" className="some-custom-class" overlayClassName="some-custom-overlay-class"
           isOpen={state.isPaneOpen}   title="Add Project" subtitle="QDM" width="300px" z-index="999999" 
           onRequestClose={() => {setState({ isPaneOpen: false });}}>   
-                <Container className="App">
-                <h4 className="PageHeading">Add Project</h4>
+                <Container className="App">               
                 <Form className="form">
                     <Col>
                         <FormGroup>                            
                             <Col sm={10}>
-                                <Input type="text" name="ProjectName"  value={state.ClientName}  placeholder="ProjectName"
+                                <Input type="text" name="projectName" value={state.ClientName}  placeholder="ProjectName"
                                  />
                             </Col>                            
                         </FormGroup>
                         <br/> 
                         <FormGroup>                            
                             <Col sm={10}>
-                                <select name="ProjectDomain" value={state.value}>                               
+                                <select name="projectDomain" value={state.value}>                               
                                   <option value="-1"> ProjectDomain</option>
                                     <option value="0">Test1</option>
                                     <option value="1">Test2</option>
@@ -237,7 +234,7 @@ const AddClient = () => {
                         <br/> 
                         <FormGroup>                            
                             <Col sm={10}>
-                            <select name="Client" value={state.value}>                               
+                            <select name="client" value={state.value}>                               
                                   <option value="-1">Choose Client</option>
                                     <option value="0">Test1</option>
                                     <option value="1">Test2</option>
@@ -248,14 +245,16 @@ const AddClient = () => {
                         </FormGroup>
                         <br/> 
                         <FormGroup>                           
-                            <Col sm={10}>
-                                <Input type="text" name="StartDate" value={state.StartDate} placeholder="StartDate" />
+                            <Col sm={10}>                               
+                                <TextField id="startDate" label="Startdate" type="date" value={state.startDate} 
+                                  InputLabelProps={{shrink: true,}}
+                               />
                             </Col>
                         </FormGroup>
                         <br/>    
                         <FormGroup>                            
-                            <Col sm={10}>
-                            <Input type="text" name="EndDate" value={state.EndDate} placeholder="EndDate" />
+                            <Col sm={10}>                            
+                            <TextField id="endDate" label="EndDate" type="date" value={state.endDate} InputLabelProps={{shrink: true,}} />
                             </Col>
                         </FormGroup>  
                         <hr/>      
@@ -266,8 +265,8 @@ const AddClient = () => {
                             <Col sm={10}>
                             </Col>
                             <Col sm={10}>
-                                <button type="button" onClick={AddClient} class="button button5">Submit</button>
-                                <button type="button" class="button button5">Cancel</button>{' '}                                 
+                                <button type="button" onClick={addProject} class="">Submit</button>
+                                <button type="button" class="">Cancel</button>{' '}                                 
                             </Col>
                             <Col sm={5}>
                             </Col>

@@ -23,6 +23,8 @@ import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { Container, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 
+
+
 //table button and Icons
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -59,14 +61,13 @@ function validateEmail(email){
 function Client() {
   var columns = [
     {title: "id", field: "id", hidden: true},
-    {title: "Client name", field: "first_name"},
+    {title: "Client Name", field: "first_Name"},
     {title: "Organization", field: "Organization"},
     {title: "Website", field: "Website"},
-    {title: "ContactNumber", field: "ContactNumber"},
-    {title: "Email", field: "email"},
-    {title: "country", field: "country"},
-    {title: "Name", field: "Name"}
-   
+    {title: "Contact Number", field: "contactNumber"},
+    {title: "EmailId", field: "email"},
+    {title: "Country", field: "country"}
+    
   ]
   const [data, setData] = useState([]); //table data
 
@@ -86,7 +87,7 @@ function Client() {
 
   //Update
   const handleRowUpdate = (newData, oldData, resolve) => {
-    //validation
+    //validation here
     let errorList = []
     if(newData.first_name === ""){
       errorList.push("Please enter first name")
@@ -94,7 +95,6 @@ function Client() {
     if(newData.email === "" || validateEmail(newData.email) === false){
       errorList.push("Please enter a valid email")
     }
-
     if(errorList.length < 1){
       api.patch("/users/"+newData.id, newData)
       .then(res => {
@@ -141,14 +141,14 @@ function Client() {
   const [state, setState] = useState({
     isPaneOpen: false,
     isPaneOpenLeft: false,
-    ClientName: '',
-    Category: '',
-    Website: '',            
-    ContactNumber: '',
-    Country:''
+    clientName: '',
+    category: '',
+    website: '',            
+    contactNumber: '',
+    country:''
   });
 
-  const AddClient = () => {
+  const addClient = () => {
     axios.post('http://localhost:5000/api/Create/', {
         "ClientName": state.ClientName, "Website": state.Website,
         "Category": state.Category, "ContactNumber": Number(state.ContactNumber),
@@ -191,7 +191,7 @@ function Client() {
           </div>
 
             <MaterialTable
-              title="Client Data"
+              title="Client Details"
               columns={columns}
               data={data}
               icons={tableIcons}
@@ -211,26 +211,24 @@ function Client() {
                 filtering: false
               }}              
             />
-          </Grid>
+          </Grid>         
         </Grid>
-
         <SlidingPane id="side-drawer" className="some-custom-class" overlayClassName="some-custom-overlay-class"
           isOpen={state.isPaneOpen}   title="Add Client" subtitle="QDM" width="300px" z-index="999999" 
           onRequestClose={() => {setState({ isPaneOpen: false });}}>   
-               <Container className="App">
-                <h4 className="PageHeading">Add Client</h4>
+               <Container className="App">               
                 <Form className="form">
                     <Col>
                         <FormGroup>                            
                             <Col sm={10}>
-                                <Input type="text" name="ClientName"  value={state.ClientName}  placeholder="Client Name"
+                                <Input type="text" name="clientName"  value={state.clientName}  placeholder="Client Name"
                                  />
                             </Col>                            
                         </FormGroup>
                         <br/> 
                         <FormGroup>                            
                             <Col sm={10}>
-                                <select name="Category" value={state.value}>                               
+                                <select name="category" value={state.value}>                               
                                   <option value="-1"> Organization Category</option>
                                     <option value="0">Test1</option>
                                     <option value="1">Test2</option>
@@ -242,19 +240,19 @@ function Client() {
                         <br/> 
                         <FormGroup>                            
                             <Col sm={10}>
-                                <Input type="text" name="Website" value={state.Website} placeholder="Website" />
+                                <Input type="text" name="website" value={state.website} placeholder="Website" />
                             </Col>
                         </FormGroup>
                         <br/> 
                         <FormGroup>                           
                             <Col sm={10}>
-                                <Input type="number" name="ContactNumber" value={state.ContactNumber} placeholder="Contact Number" />
+                                <Input type="number" name="contactNumber" value={state.contactNumber} placeholder="Contact Number" />
                             </Col>
                         </FormGroup>
                         <br/>    
                         <FormGroup>                            
                             <Col sm={10}>
-                                <select name="Country" value={state.value}>                               
+                                <select name="country" value={state.value}>                               
                                   <option value="-1">Country</option>
                                     <option value="0">India</option>
                                     <option value="1">Singapur</option>
@@ -267,14 +265,14 @@ function Client() {
                         <FormGroup>
                             <Label for="In-Charge Details" sm={2}>In-Charge Details</Label>
                             <Col sm={10}>
-                                <Input type="text" name="Name" value={state.Name}  placeholder="Name"
+                                <Input type="text" name="name" value={state.name}  placeholder="Name"
                                     required />
                             </Col>
                         </FormGroup>
                         <br/>
                         <FormGroup>                            
                             <Col sm={10}>
-                                <Input type="text" name="EmailID" value={state.EmailID} placeholder="EmailID"/>
+                                <Input type="text" name="emailID" value={state.emailID} placeholder="EmailID"/>
                             </Col>
                         </FormGroup>             
                     </Col>
@@ -284,8 +282,8 @@ function Client() {
                             <Col sm={10}>
                             </Col>
                             <Col sm={10}>
-                                <button type="button" onClick={AddClient} class="button button5">Submit</button>
-                                <button type="button" class="button button5">Cancel</button>{' '}                                 
+                                <button type="button" onClick={addClient} class="">Submit</button>
+                                <button type="button" class="">Cancel</button>{' '}                                 
                             </Col>
                             <Col sm={5}>
                             </Col>
@@ -294,7 +292,6 @@ function Client() {
                 </Form>
             </Container>
         </SlidingPane>
-
     </div>
   );
 }

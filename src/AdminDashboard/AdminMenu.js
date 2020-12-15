@@ -87,10 +87,10 @@ export default function NavTabs() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <Client />        
+        <Client/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-         <Project/>
+        <Project/>
       </TabPanel>
       <TabPanel value={value} index={2}>
          Manage Users
@@ -98,6 +98,10 @@ export default function NavTabs() {
       <TabPanel value={value} index={3}>
       Manage Roles
       </TabPanel>
+      <div className="footer">
+      <p>Copy rights @QDM 2020</p>
+     </div>
     </div>
+    
   );
 }
