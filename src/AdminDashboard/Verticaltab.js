@@ -4,7 +4,7 @@ import "react-web-tabs/dist/react-web-tabs.css";
 import AdminMenu from './AdminMenu'; 
 
 
-function VerticalTab() {
+function Verticaltab() {
     return (
         <Tabs defaultTab="vertical-tab-one" vertical className="vertical-tabs">
             <TabList>
@@ -24,5 +24,5 @@ function VerticalTab() {
     
 }
 
-export default VerticalTab;
+export default Verticaltab;
 
