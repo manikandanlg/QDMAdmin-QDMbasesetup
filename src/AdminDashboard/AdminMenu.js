@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Client from './Client'; 
 import Project from './Project'; 
-
+import Users from './Users'; 
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -93,7 +93,7 @@ export default function NavTabs() {
         <Project/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-         Manage Users
+         <Users/>
       </TabPanel>
       <TabPanel value={value} index={3}>
       Manage Roles
