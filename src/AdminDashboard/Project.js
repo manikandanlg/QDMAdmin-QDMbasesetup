@@ -23,6 +23,7 @@ import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import { Container, Col, Form, FormGroup, Input } from 'reactstrap';
 import TextField from '@material-ui/core/TextField';
+import validate from './LoginFormValidationRules';
 
 
 const tableIcons = {
@@ -135,7 +136,7 @@ function Project() {
         resolve()
       })
   }
- //slide panel and add client
+ //slide panel and add project and validation rules
  const [state, setState] = useState({
   isPaneOpen: false,
   isPaneOpenLeft: false,
@@ -146,24 +147,35 @@ function Project() {
   endDate:''
 });
 
-const addProject = () => {
-  axios.post('http://localhost:5000/api/Create/', {
-      "ProjectName": state.ProjectName, "ProjectDomain": state.ProjectDomain,
-      "Client": state.Client, "StartDate":state.StartDate,
-      "EndDate": state.EndDate
-  })
-      .then(json => {
-          if (json.data !== undefined) {
-              console.log(json.data.Status);
-              alert("Data Save Successfully");
-              //this.props.history.push('/Client')                    
-          }
-          else {
-              alert('Data not Saved');
-              //this.props.history.push('/Client')
-          }
+  const [values, setValues] = useState({});
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (Object.keys(errors).length === 0 && isSubmitting) {
+     //call create api here
+      api.post("/users/")
+      .then(res => {
+      
       })
-}
+      .catch(error => {        
+        
+      })     
+    } 
+  }, [errors]);
+
+  const handleSubmit = (event) => {
+    if (event) event.preventDefault();
+    setErrors(validate(values));
+    setIsSubmitting(true);     
+  };
+
+  const handleChange = (event) => {
+    event.persist();
+    setValues(values => ({ ...values, [event.target.name]: event.target.value }));
+  }; 
+
+
 //const handleChange = (e) => {
   //this.setState({ [e.target.name]: e.target.value });
 //}
@@ -211,12 +223,14 @@ const addProject = () => {
           isOpen={state.isPaneOpen}   title="Add Project" subtitle="QDM" width="300px" z-index="999999" 
           onRequestClose={() => {setState({ isPaneOpen: false });}}>   
                 <Container className="App">               
-                <Form className="form">
+                <Form className="form" onSubmit={handleSubmit} noValidate>
                     <Col>
                         <FormGroup>                            
                             <Col sm={10}>
-                                <Input type="text" name="projectName" value={state.ClientName}  placeholder="ProjectName"
-                                 />
+                                <Input type="text" name="projectName" value={state.projectName}  placeholder="ProjectName"
+                                 onChange={handleChange}  required/>
+                                 {errors.projectName && (
+                                  <p className="labledanger">{errors.projectName}</p> )}
                             </Col>                            
                         </FormGroup>
                         <br/> 
@@ -246,15 +260,20 @@ const addProject = () => {
                         <br/> 
                         <FormGroup>                           
                             <Col sm={10}>                               
-                                <TextField id="startDate" label="Startdate" type="date" value={state.startDate} 
-                                  InputLabelProps={{shrink: true,}}
-                               />
+                                <TextField id="startDate" label="Startdate" name="startDate" type="date" value={state.startDate} 
+                                  InputLabelProps={{shrink: true,}}  onChange={handleChange}  required
+                                />
+                                {errors.startDate && (
+                                  <p className="labledanger">{errors.startDate}</p> )}
                             </Col>
                         </FormGroup>
                         <br/>    
                         <FormGroup>                            
                             <Col sm={10}>                            
-                            <TextField id="endDate" label="EndDate" type="date" value={state.endDate} InputLabelProps={{shrink: true,}} />
+                            <TextField id="endDate" label="EndDate" name="endDate" type="date" value={state.endDate} 
+                            InputLabelProps={{shrink: true,}} onChange={handleChange}  required />
+                            {errors.endDate && (
+                                  <p className="labledanger">{errors.endDate}</p> )}
                             </Col>
                         </FormGroup>  
                         <hr/>      
@@ -265,8 +284,8 @@ const addProject = () => {
                             <Col sm={10}>
                             </Col>
                             <Col sm={10}>
-                                <button type="button" onClick={addProject} class="">Submit</button>
-                                <button type="button" class="">Cancel</button>{' '}                                 
+                                <button type="submit" class="button button1">Submit</button>
+                                <button type="submit" class="button button1">Cancel</button>                                
                             </Col>
                             <Col sm={5}>
                             </Col>

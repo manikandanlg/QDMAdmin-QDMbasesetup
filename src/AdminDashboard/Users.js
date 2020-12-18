@@ -21,7 +21,9 @@ import axios from 'axios'
 import Alert from '@material-ui/lab/Alert';
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
+import { Container, Col, Form, FormGroup, Input } from 'reactstrap';
 import Tabs from "../components/Tabs";
+import validate from './LoginFormValidationRules';
 
 
 const tableIcons = {
@@ -58,11 +60,9 @@ function Users() {
 
   var columns = [
     {title: "id", field: "id", hidden: true},
-    {title: "Project Name", field: "first_name"},
-    {title: "Domain", field: "projectDomain"},
-    {title: "Client Name", field: "clientname"},
-    {title: "Duration", field: "duration"},
-    {title: "Status", field: "status"}
+    {title: "User Name", field: "first_name"},
+    {title: "EmailId", field: "emailId"},
+    {title: "Role", field: "role"} 
   ]
   const [data, setData] = useState([]); //table data
 
@@ -119,8 +119,7 @@ function Users() {
 
   
   const handleRowDelete = (oldData, resolve) => {
-    
-    api.delete("/users/"+oldData.id)
+        api.delete("/users/"+oldData.id)
       .then(res => {
         const dataDelete = [...data];
         const index = oldData.tableData.id;
@@ -134,39 +133,42 @@ function Users() {
         resolve()
       })
   }
- //slide panel and add client
+ //slide panel and add User and validation
  const [state, setState] = useState({
   isPaneOpen: false,
   isPaneOpenLeft: false,
-  projectName: '',
-  projectDomain: '',
-  client: '',            
-  startDate: '',
-  endDate:''
+  userName: '',
+  emailId: '',
+  role: ''   
 });
 
-//const addUsers = () => {
-  //axios.post('http://localhost:5000/api/Create/', {
-    //  "ProjectName": state.ProjectName, "ProjectDomain": state.ProjectDomain,
-      //"Client": state.Client, "StartDate":state.StartDate,
-      //"EndDate": state.EndDate
-  //})
-    //  .then(json => {
-      //    if (json.data !== undefined) {
-        //      console.log(json.data.Status);
-          //    alert("Data Save Successfully");
-            //  //this.props.history.push('/Client')                    
-          //}
-          //else {
-            //  alert('Data not Saved');
-              ////this.props.history.push('/Client')
-          //}
-      //})
-//}
-//const handleChange = (e) => {
-  //this.setState({ [e.target.name]: e.target.value });
-//}
+  const [values, setValues] = useState({});
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    if (Object.keys(errors).length === 0 && isSubmitting) {
+     //call create api here and if contion for diffrent tabs
+      api.post("/users/")
+      .then(res => {
+      
+      })
+      .catch(error => {        
+        
+      })     
+    } 
+  }, [errors]);
+
+  const handleSubmit = (event) => {
+    if (event) event.preventDefault();
+    setErrors(validate(values));
+    setIsSubmitting(true);     
+  };
+
+  const handleChange = (event) => {
+    event.persist();
+    setValues(values => ({ ...values, [event.target.name]: event.target.value }));
+  };
 
   return (
     <div className="App">      
@@ -207,16 +209,93 @@ function Users() {
           </Grid>
         </Grid>
         <SlidingPane id="side-drawer" className="some-custom-class" overlayClassName="some-custom-overlay-class"
-          isOpen={state.isPaneOpen}   title="Add Users" subtitle="QDM" width="300px" z-index="999999" 
+          isOpen={state.isPaneOpen}   title="Add Users" subtitle="QDM" width="350px" z-index="999999" 
           onRequestClose={() => {setState({ isPaneOpen: false });}}>   
-                <Tabs>
-                    <div label="User Details">
-                    
-                    </div>
-                    <div label="Client & Projects">
-                  
-                    </div>
-               </Tabs>
+            <Tabs>
+              <div label="User Details">
+               <Container className="App">               
+                <Form className="form"  onSubmit={handleSubmit} noValidate>
+                    <Col>
+                        <FormGroup>                            
+                            <Col sm={10}>
+                                <Input type="text" name="userName" value={state.userName}  placeholder="UserName"
+                                 onChange={handleChange} required/>
+                                 {errors.userName && (
+                                  <p className="labledanger">{errors.userName}</p> )}
+                            </Col>                            
+                        </FormGroup>
+                        <br/> 
+                        <FormGroup>                           
+                            <Col sm={10}>                               
+                            <Input type="text" name="emailID" value={state.emailID}  placeholder="EmailId"
+                            onChange={handleChange} required />     
+                                 {errors.emailID && (
+                                  <p className="labledanger">{errors.emailID}</p> )}                          
+                            </Col>
+                        </FormGroup>
+                        <br/>  
+                        <FormGroup>                            
+                            <Col sm={10}>
+                                <select name="role" value={state.value}>                               
+                                  <option value="-1"> Role</option>
+                                    <option value="0">Test1</option>
+                                    <option value="1">Test2</option>
+                                    <option value="2">Test3</option>
+                                    <option value="3">Test4</option>
+                                </select>
+                            </Col>
+                        </FormGroup>
+                        <br/> 
+                        <hr/>  
+                        <br/>    
+                    </Col>
+                    <br/>
+                    <Col>
+                        <FormGroup>
+                            <Col sm={10}>
+                            </Col>
+                            <Col sm={10}>
+                                <button type="submit" class="button button1">Save</button>
+                                <button type="submit" class="button button1">Cancel</button>                                 
+                            </Col>
+                            <Col sm={5}>
+                            </Col>
+                        </FormGroup>
+                    </Col>                  
+                </Form>
+            </Container>
+          </div>
+         <div label="Client & Projects">
+         <Container className="App">               
+                <Form className="form" onSubmit={handleSubmit} noValidate>
+                    <Col>
+                        <FormGroup>                            
+                            <Col sm={10}>
+                                <Input type="text" name="search" value={state.search}  placeholder="Search clients and projects"
+                                 />
+                            </Col>                            
+                        </FormGroup>
+                        <br/> 
+                        <hr/>  
+                        <br/>    
+                    </Col>
+                    <br/>
+                    <Col>
+                        <FormGroup>
+                            <Col sm={10}>
+                            </Col>
+                            <Col sm={10}>
+                                <button type="submit" class="button button1">Save</button>
+                                <button type="submit" class="button button1">Cancel</button>                               
+                            </Col>
+                            <Col sm={5}>
+                            </Col>
+                        </FormGroup>
+                    </Col>                  
+                </Form>
+            </Container>
+        </div>
+        </Tabs>
         </SlidingPane>
     </div>
   );

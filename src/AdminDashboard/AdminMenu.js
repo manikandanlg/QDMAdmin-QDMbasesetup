@@ -9,6 +9,7 @@ import Box from '@material-ui/core/Box';
 import Client from './Client'; 
 import Project from './Project'; 
 import Users from './Users'; 
+import Role from './Role'; 
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -96,7 +97,7 @@ export default function NavTabs() {
          <Users/>
       </TabPanel>
       <TabPanel value={value} index={3}>
-      Manage Roles
+        <Role/>
       </TabPanel>
       <div className="footer">
       <p>Copy rights @QDM 2020</p>

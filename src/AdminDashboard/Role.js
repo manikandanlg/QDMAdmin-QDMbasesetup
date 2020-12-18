@@ -21,12 +21,11 @@ import axios from 'axios'
 import Alert from '@material-ui/lab/Alert';
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
-import { Container, Col, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Container, Col, Form, FormGroup, Input } from 'reactstrap';
+import Tabs from "../components/Tabs";
 import validate from './LoginFormValidationRules';
 
 
-
-//table button and Icons
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -47,36 +46,31 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-//API client information
 const api = axios.create({
   baseURL: `https://reqres.in/api`
 })
 
-//Emailvalidation
+
 function validateEmail(email){
   const re = '';
   return re.test(String(email).toLowerCase());
 }
 
-//Grid item
-function Client() {
+function Role() {
+
   var columns = [
     {title: "id", field: "id", hidden: true},
-    {title: "Client Name", field: "first_Name"},
-    {title: "Organization", field: "Organization"},
-    {title: "Website", field: "Website"},
-    {title: "Contact Number", field: "contactNumber"},
-    {title: "EmailId", field: "email"},
-    {title: "Country", field: "country"}
-    
-  ]
+    {title: "Role Name", field: "first_name"},
+    {title: "Description", field: "description"}
+  
+]
   const [data, setData] = useState([]); //table data
 
   //for error handling
   const [iserror, setIserror] = useState(false)
   const [errorMessages, setErrorMessages] = useState([])
 
-  useEffect(() => { 
+  useEffect(() => {     
     api.get("/users")
         .then(res => {               
             setData(res.data.data)
@@ -86,16 +80,17 @@ function Client() {
          })
   }, [])
 
-  //Update
   const handleRowUpdate = (newData, oldData, resolve) => {
-    //validation here
+    //validation
     let errorList = []
     if(newData.first_name === ""){
       errorList.push("Please enter first name")
-    }   
+    }
+   
     if(newData.email === "" || validateEmail(newData.email) === false){
       errorList.push("Please enter a valid email")
     }
+
     if(errorList.length < 1){
       api.patch("/users/"+newData.id, newData)
       .then(res => {
@@ -118,11 +113,13 @@ function Client() {
       setIserror(true)
       resolve()
 
-    }    
+    }
+    
   }
 
-  //delete
-  const handleRowDelete = (oldData, resolve) => {    
+  
+  const handleRowDelete = (oldData, resolve) => {
+    
     api.delete("/users/"+oldData.id)
       .then(res => {
         const dataDelete = [...data];
@@ -137,49 +134,47 @@ function Client() {
         resolve()
       })
   }
+ //slide panel and add Roles with validation
+ const [state, setState] = useState({
+  isPaneOpen: false,
+  isPaneOpenLeft: false,
+  userName: '',
+  emailId: '',
+  role: ''   
+});
 
-  //slide panel and add client add with validation
-  const [state, setState] = useState({
-    isPaneOpen: false,
-    isPaneOpenLeft: false,
-    clientName: '',
-    category: '',
-    website: '',            
-    contactNumber: '',
-    country:''
-  });  
+const [values, setValues] = useState({});
+const [errors, setErrors] = useState({});
+const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [values, setValues] = useState({});
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (Object.keys(errors).length === 0 && isSubmitting) {
-     //call create api here
-      api.post("/users/")
-      .then(res => {
+useEffect(() => {
+  if (Object.keys(errors).length === 0 && isSubmitting) {
+   //call create api here and check multiple tabs condition 
+    api.post("/users/")
+    .then(res => {
+    
+    })
+    .catch(error => {        
       
-      })
-      .catch(error => {        
-        
-      })     
-    } 
-  }, [errors]);
+    })     
+  } 
+}, [errors]);
 
-  const handleSubmit = (event) => {
-    if (event) event.preventDefault();
-    setErrors(validate(values));
-    setIsSubmitting(true);     
-  };
+const handleSubmit = (event) => {
+  if (event) event.preventDefault();
+  setErrors(validate(values));
+  setIsSubmitting(true);     
+};
 
-  const handleChange = (event) => {
-    event.persist();
-    setValues(values => ({ ...values, [event.target.name]: event.target.value }));
-  }; 
- //div - error message | Grid - Metrial table with action | slide panel - add client
+const handleChange = (event) => {
+  event.persist();
+  setValues(values => ({ ...values, [event.target.name]: event.target.value }));
+}; 
+
+
   return (
     <div className="App">      
-      <Grid container spacing={1}>       
+      <Grid container spacing={1}>         
           <Grid item xs={6}>
           <div>
             {iserror && 
@@ -190,110 +185,59 @@ function Client() {
               </Alert>
             }       
           </div>
-
           <div id="addMenu">
-           Add Clients<AddBox onClick={() => setState({ isPaneOpen: true })}></AddBox>
+           Add Users<AddBox onClick={() => setState({ isPaneOpen: true })}></AddBox>
           </div>
             <MaterialTable
-              title="Client Details"
+              title="Role Details"
               columns={columns}
               data={data}
               icons={tableIcons}
               editable={{
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve) => {
-                      handleRowUpdate(newData, oldData, resolve);                      
+                      handleRowUpdate(newData, oldData, resolve);
+                      
                   }),               
                 onRowDelete: (oldData) =>
                   new Promise((resolve) => {
                     handleRowDelete(oldData, resolve)
                   }),
-              }}              
+              }}
               options={{
-                actionsColumnIndex: -1,
-                exportButton: true,
-                filtering: false
-              }}              
+                actionsColumnIndex: -1
+              }}
             />
-          </Grid>         
+          </Grid>
         </Grid>
         <SlidingPane id="side-drawer" className="some-custom-class" overlayClassName="some-custom-overlay-class"
-          isOpen={state.isPaneOpen}   title="Add Client" subtitle="QDM" width="300px" z-index="999999" 
+          isOpen={state.isPaneOpen}   title="Add Role" subtitle="QDM" width="350px" z-index="999999" 
           onRequestClose={() => {setState({ isPaneOpen: false });}}>   
+            <Tabs>
+              <div label="Role Details">
                <Container className="App">               
-                <Form className="form"  onSubmit={handleSubmit} noValidate>
+                <Form className="form" onSubmit={handleSubmit} noValidate>
                     <Col>
                         <FormGroup>                            
                             <Col sm={10}>
-                                  <input autoComplete="off" placeholder="Client Name" className={`input ${errors.clientName && 'is-danger'}`} type="text" name="clientName"
-                                  onChange={handleChange} value={values.clientName || ''} required />
-                                  {errors.clientName && (
-                                  <p className="labledanger">{errors.clientName}</p> )}
+                                <Input type="text" name="roleName" value={state.roleName}  placeholder="RoleName"
+                                 onChange={handleChange}  required/>
+                                 {errors.roleName && (
+                                 <p className="labledanger">{errors.roleName}</p> )}
                             </Col>                            
                         </FormGroup>
                         <br/> 
-                        <FormGroup>                            
-                            <Col sm={10}>
-                                <select name="category" value={state.value}  onChange={handleChange} placeholder="Organization Category">                               
-                                  <option value="-1"></option>
-                                    <option value="0">Test1</option>
-                                    <option value="1">Test2</option>
-                                    <option value="2">Test3</option>
-                                    <option value="3">Test4</option>
-                                </select>
-                                {errors.category && (
-                                  <p className="labledanger">{errors.category}</p> )}
-                            </Col>
-                        </FormGroup>
-                        <br/> 
-                        <FormGroup>                            
-                            <Col sm={10}>
-                                <Input type="text" name="website" value={state.website} placeholder="Website" 
-                                onChange={handleChange}  required/>
-                                {errors.website && (
-                                  <p className="labledanger">{errors.website}</p> )}
-                            </Col>
-                        </FormGroup>
-                        <br/> 
                         <FormGroup>                           
-                            <Col sm={10}>
-                                <Input type="text" name="contactNumber" value={state.contactNumber} placeholder="Contact Number"
-                                onChange={handleChange}  required />                                
-                                {errors.contactNumber && (
-                                  <p className="labledanger">{errors.contactNumber}</p> )}
+                            <Col sm={10}>                               
+                            <Input type="textarea" name="description" value={state.description}  placeholder="Description"
+                               onChange={handleChange}  required   /> 
+                                 {errors.description && (
+                                 <p className="labledanger">{errors.description}</p> )}                              
                             </Col>
                         </FormGroup>
+                        <br/>  
+                        <hr/>  
                         <br/>    
-                        <FormGroup>                            
-                            <Col sm={10}>
-                                <select name="country" value={state.value}>                               
-                                  <option value="-1">Country</option>
-                                    <option value="0">India</option>
-                                    <option value="1">Singapur</option>
-                                    <option value="2">Dubai</option>
-                                    <option value="3">Malasiya</option>
-                                </select>
-                            </Col>
-                        </FormGroup>  
-                        <br/>
-                        <hr/>   
-                        <br/>                     
-                        <FormGroup>
-                            <Label for="In-Charge Details" sm={2}>In-Charge Details</Label>
-                            <Col sm={10}>
-                                <Input type="number" name="name" value={state.name}  placeholder="Name"
-                                    required />
-                            </Col>
-                        </FormGroup>
-                        <br/>
-                        <FormGroup>                            
-                            <Col sm={10}>
-                                <Input type="email" name="emailID" value={state.emailID} placeholder="EmailID"
-                                onChange={handleChange}  required/>
-                                {errors.emailID && (
-                                  <p className="labledanger">{errors.emailID}</p> )}
-                            </Col>
-                        </FormGroup>             
                     </Col>
                     <br/>
                     <Col>
@@ -301,8 +245,8 @@ function Client() {
                             <Col sm={10}>
                             </Col>
                             <Col sm={10}>
-                                <button type="submit" class="button button1">Submit</button>
-                                <button type="submit" class="button button1">Cancel</button>                                
+                                <button type="submit" class="button button1">Save</button>
+                                <button type="submit" class="button button1">Cancel</button>                                   
                             </Col>
                             <Col sm={5}>
                             </Col>
@@ -310,9 +254,71 @@ function Client() {
                     </Col>                  
                 </Form>
             </Container>
+          </div>
+         <div label="Pages">
+         <Container className="App">               
+                <Form className="form" onSubmit={handleSubmit} noValidate>
+                    <Col>
+                        <FormGroup>                            
+                            <Col sm={10}>
+                                <Input type="text" name="search" value={state.search}  placeholder="Search for page"
+                                 />
+                            </Col>                            
+                        </FormGroup>
+                        <br/> 
+                        <hr/>  
+                        <br/>    
+                    </Col>
+                    <br/>
+                    <Col>
+                        <FormGroup>
+                            <Col sm={10}>
+                            </Col>
+                            <Col sm={10}>
+                                <button type="submit" class="button button1">Save</button>
+                                <button type="submit" class="button button1">Cancel</button>                                   
+                            </Col>
+                            <Col sm={5}>
+                            </Col>
+                        </FormGroup>
+                    </Col>                  
+                </Form>
+            </Container>
+        </div>
+        <div label="Reports">
+        <Container className="App">               
+                <Form className="form" onSubmit={handleSubmit} noValidate>
+                    <Col>
+                        <FormGroup>                            
+                            <Col sm={10}>
+                                <Input type="text" name="search" value={state.search}  placeholder="Search for page"
+                                 />
+                            </Col>                            
+                        </FormGroup>
+                        <br/> 
+                        <hr/>  
+                        <br/>    
+                    </Col>
+                    <br/>
+                    <Col>
+                        <FormGroup>
+                            <Col sm={10}>
+                            </Col>
+                            <Col sm={10}>
+                                <button type="submit" class="button button1">Save</button>
+                                <button type="submit" class="button button1">Cancel</button>                                  
+                            </Col>
+                            <Col sm={5}>
+                            </Col>
+                        </FormGroup>
+                    </Col>                  
+                </Form>
+            </Container>        
+        </div>
+        </Tabs>
         </SlidingPane>
     </div>
   );
 }
 
-export default Client;
+export default Role;

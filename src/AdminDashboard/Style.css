@@ -48,3 +48,57 @@
   text-align: center;
   color: whitesmoke;
 }
+
+@media all and (max-width: 600px) 
+{
+  .rwt__tab{
+  writing-mode: tb-rl;
+  -webkit-transform:rotate(90deg);
+  -moz-transform:rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform:rotate(90deg);
+  transform: rotate(90deg);
+  width:1px;
+  height: 75px;
+  }
+  .rwt__tab[aria-selected="true"]:after
+  {
+    
+    right: 0px;
+    border-right:0px solid #00d8ff  !important;
+  }
+}
+
+.labledanger{
+color: #ff0039;
+height: 0.3em;
+font-weight: bolder;
+}
+
+.button {
+  background-color: #3f51b5; /* Green */
+  border: none;
+  color: white;
+  padding: 5px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  margin: 2px;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  width:75px;
+  
+}
+
+.button1 {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.button2:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+
+
